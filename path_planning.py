@@ -220,7 +220,7 @@ def astar(terrain:Map, start:Point, goal:Point) -> Tuple[int, int, Optional[List
             # Hint: `heapq.heappush` is still useful.
             # Be sure to track the best cost and predecessor for each new node in `best_costs`, and use your combined priority for this node to guide the search.
             # manhattan_distance(neighbor, goal)or (best_costs[neighbor][0] > neighbor_cost + best_costs[node][0])
-            nh = manhattan_distance(neighbor, goal) + 10*(best_costs[node][0] + neighbor_cost)
+            nh = manhattan_distance(neighbor, goal) + best_costs[node][0] + neighbor_cost
             if (neighbor not in best_costs):
                 heapq.heappush(open_list, (nh,neighbor))
                 cost2, node2 = best_costs.get(node)
