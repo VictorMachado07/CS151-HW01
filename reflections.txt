@@ -1,0 +1,102 @@
+
+Path Planning Four Ways
+1.	In your own words, what is a graph in the discrete mathematics/computer science sense? How might you represent a graph using data structures in a computer program? Pseudo-code is fine.
+A graph is a set of nodes (key, value) that have edges connecting nodes to another. It can be represented as a two-dimensional array [n][n] with n being the number of nodes and if a->b is true, then [a][b] would be 1 and 0 else.
+2.	Have you encountered any of the above algorithms before?
+Victor has done breadth-first search and Dijkstra’s algorithm in pseudo-code, C and learned the theory. Tran has also done breadth-first search and Dijkstra’s algorithm theoretical and implemented them in C.
+3.	Besides planning movement through a physical space, what other uses do you think they might have in analyzing real-world systems, understanding the behavior of computer programs, or other areas? Describe one other compelling use case for graph search.
+Dijkstra’s algorithm can be used for finding efficient routes for traveling by different modes (car, walking, public transportation). Breadth-first search can be used to find the shortest path, but it is more useful when edges have the same length (ie flight scheduling with multiple destinations).
+4.	If we restrict our attention to four-connected graphs (like chess-boards or grids), does that change our answer to question (1)? Is there another, more appropriate representation we might consider that saves memory space or seems easier to process?
+Instead of having 1’s and 0’s to represent if a is connected to b, have a two dimensional matrix with the actual node(key, value) in it’s corresponding location. The nodes connected to it would be north, south, east, and west of it unless it is at the edge of the grid.
+5.	Describe, in your own words, the format of terrain.txt and the implementation of load_map.
+
+Terrain.txt is the graph representation of the map in Minecraft where a node is connected to the nodes north, south, east, and west of it. Load_map returns a Map (list of list of str) where each list is a row of nodes.
+
+6.	If we want to talk about a specific spot in the terrain (by an x and y coordinate), how would we write that? Python indexes lists using square brackets, so we might write l[5] for the sixth element of a list (by zero-indexing).
+A specific spot would be written as “terrain[x][y]”.
+7.	What are the neighbors of the cell at (3,3)? Given a coordinate pair (x,y), what are its four neighbors in terms of mathematical operations on x and y?
+Neighbors of (3,3): (3,2), (2,3), (3,4), (4,3)
+Neighbors of (x,y): (x-1, y), (x+1,y), (x,y-1), (x,y+1)
+8.	Why might breadth-first search and Dijkstra’s algorithm be considered uninformed?
+Both algorithms don’t have a guess for which path would get it quickly to the end point and instead iterate through the nodes based on information returned at each loop.
+9.	In breadth-first search, where do newly expanded nodes go in the open list? Do you know the name of the abstract data structure where the “oldest” node comes out first?
+The newly expanded nodes go to the back of open_list. The data structure is a queue.
+10.	Is the first path found by best-first search guaranteed to be cost-optimal? Step-optimal? Is the overall result of best-first search guaranteed to be cost-optimal?
+The best-first is guaranteed to be step-optimal but not guaranteed to be cost-optime.
+11.	Graph search algorithms are generally described in terms of the state they are considering and the transition relation which gives successor states. In your implementation above, what is a state? What is the transition relation?
+In breadth-first search, the state would be node and the transition relation would be the neighbors that would be appended.
+12.	Dijkstra’s algorithm differs from breadth-first search in a key way. What information does it consider which breadth-first search ignores? What does this mean for our representation of the search state?
+Dijkstra’s algorithm considers the smallest path cost so far and continues searching from that point. The search state ...
+
+13.	Try Dijkstra’s algorithm out on the examples from before. How does it differ in terms of visited nodes? In terms of found paths?
+It visits less nodes, but will give back the same path from breadth_first().
+14.	Is the first path found by Dijkstra’s algorithm guaranteed to be cost-optimal? What optimizations would be possible if the first-found path were also an optimal path?
+The first path found by Dijkstra’s is guaranteed to be cost-optimal. If the first-found path is also an optimal path, then you can break out of the loop and stop visiting nodes once you find the first path.
+15.	In breadth-first search, we were able to eventually terminate by declining to expand nodes we had already expanded previously with better costs. Is special code to do this necessary in Dijkstra’s algorithm? Why or why not?
+This is not needed in Dijkstra’s algorithm because we use a min heap as a priority queue to pick the smallest values. So, we do not need to look at nodes we had already expanded previously with better costs because these will already be picked.
+16.	Given an (x,y) position and a goal (gx,gy), and assuming every step is as cheap as possible, what is the least number of steps required to get from (x,y) to (gx,gy), ignoring the tiles at each position in the map? (Remember that diagonal moves are not possible!)
+Absolute value of (gx-x) + absolute value of (gy-y).
+17.	Do you think this strategy would give optimal paths if we always picked the first path we found? Why or why not?
+It could give an optimal path so long as the value of all the blocks on terrain is the same. Otherwise, we face the issue of running into points that cost a lot despite having the shortest path there in terms of Manhattan Distance.
+18.	Does best-first search need to return the first found path or should it wait until examining all paths, as in breadth-first search? Why?
+It should return the first found path because the heuristic will make best-first search go down one path.
+
+19.	Should best-first search avoid re-expanding nodes with higher costs, as we did for the earlier algorithms?
+Yes it should, since re-expanding nodes with higher costs can occur since our heuristic is only the Manhattan Distance to a position and we do not want to re-expand nodes with higher costs.
+20.	Try best-first search on the examples from before. How does it differ in terms of visited nodes? In terms of found paths?
+It visits a lot less nodes and in terms of found paths it’s not guaranteed to be optimal.
+21.	What is the main difference between best-first search and your implementation of Dijkstra’s algorithm from before?
+Instead of adding the cost to the node to the priority queue, we add the heuristic value to the priority queue.
+22.	Can you think of a way to combine the priority information from Dijkstra’s algorithm (cost to get there) and from best-first search (estimated cost to reach the goal)? What is the priority in the search state, and what do you track in best_costs?
+Sum the heuristic and the cost to get there. The priority in the search state will then be the node minimizing the heuristic and the cost to get to that node.
+23.	Compare your implementation of A* to your previous implementations in terms of nodes visited and paths found.
+It is almost the same as best_first but the only thing that should change is the way the heuristic is calculated. It should now be the cost to get to that node plus the Manhattan distance from node to the goal value. It visits less nodes than djikstra’s and is always guaranteed an optimal path.
+24.	Is the first solution found by A* in this domain guaranteed to be cost-optimal?
+Yes. (Idk how to explain)
+25.	What if we replace calls to the heuristic function (used as part of determining priority) with the constant 0? Does this behave like a different algorithm in terms of nodes visited and path found?
+If we change the heuristic function with the constant 0, then astar will perform like Dijkstra’s
+26.	How about if we replace the uses of the cost so far in the priority calculations with 0? Does this behave like a different algorithm in terms of nodes visited and path found?
+If we change the cost so far in the priority calculations with 0, then astar will perform like best_first search.
+27.	When a heuristic overestimates the distance to the goal, it is called inadmissible. We could make our heuristic inadmissible just by multiplying its output by some factor, say 10, before using its results in the priority calculation. How does this affect nodes visited and path found for the examples given above?
+When the heuristic is in admissible it affects the number of nodes visited, the algorithm should travel to more nodes. This still prints the optimal path for all the examples, but the number of nodes visited definitely increases.
+
+
+Craft Planning with Iterative Widening
+1.	Do the recipe dictionaries in crafting.json all have the same set of keys? Print out a few to find out, or read the JSON file.
+No, they have different requirements and consumption.
+2.	What is similar about the Initial, Goal, Produces, Consumes, and Requires schema? What is different about them?
+All items in Produces, Consumes, and Requires need to be created by recipes. Initial and Goal also has items that is created by recipes. Produces only creates one type of item while Consumes can take one or more item types.
+3.	Thinking back to your data structures class, what operations are involved in looking up a key in a dictionary data structure, and how does that compare to obtaining values from an array?
+Dictionary searches for keys (can be any object type) whereas an array searches by index (int). Actions for looking up a key can be: “get”.
+4.	Look this up if you need to: What is the difference between a Python List of integers and a Python array.array of integers?
+Arrays need to be declared and arithmetic functions can use arrays while lists don’t need to be declared and arithmetic functions can’t be used on them.
+5.	What was the state representation in the path planning assignment?
+The state is the current point with the value.
+6.	What was the action representation?
+The action representation was moving (north, south, east, west).
+7.	How many possible actions are there in the whole domain, and how many of those are possible in a given state?
+There are 4 possible actions in the whole domain but number possible depended on the algorithm (ie. BFS – next in the queue).
+8.	Consider your implementation of Dijkstra’s algorithm. What would need to change so it works on states-and-actions instead of locations-and-directions?
+For this to work on states and actions we must redefine how to find the neighbors of a state and we must use the recipe cost value for the priority queue. We know that there exists a state that has reached the goal if state >= goal.
+9.	Imagine applying A* here. What heuristic would you want to use? Is that heuristic admissible? Is that a problem?
+A potential heuristic could be the goal state and whether the number of items is getting closer to the answer. It would not be admissible because the number of items is constantly changing and the added heuristic might not make the option a significant higher priority.
+10.	What’s the largest planning problem (initial and goal state) you can think up which your Dijkstra’s implementation can solve optimally within 30 seconds? How many nodes does it visit and how long does it take in wall-clock time?
+…
+11.	In graph search, what is the goal of a search? How is that different from the goal of a planning problem?
+The goal of a search is to find the destination node (one state). The goal of a planning problem can be many states that satisfy the preconditions.
+12.	In graph search, what are the preconditions for traversing an edge? How does this differ in a planning problem?
+The preconditions for traversing an edge is if the edge exists between two nodes. The preconditions for the planning problem is if the edge is if it isn’t similar to other states already seen in an an iteration.
+13.	In graph search, detecting cycles is relatively cheap. Is that the case for planning problems?
+Detecting cycles for the different states is not cheap since we must look for back edges. This is a problem because we must run DFS to check if there are back edges and DFS takes O(V + E) time, we know how many possible vertices there are, but …
+14.	Is there more than one type of “cycle” in our crafting planning problem?
+Yes, another kind of cycle could be reusing a existing recipe to create many items of one type.
+15.	If we had a domain with just two recipes (punch for wood and wood planks), what would be the abstract states in the sense used above?
+One state where we have wood planks, one where there are no wood planks but we have wood, one where there are no wood planks and we have no wood,
+16.	What’s the largest planning problem (initial and goal state) you can think up which your algorithm can solve within 30 seconds? How many nodes does it visit at its deepest W level, how high does WMax have to be, and how long does it take in seconds
+…
+17.	How does increasing or decreasing the value of WMax change the time to find a solution, or: what sorts of craft planning situations benefit from increasing WMax?
+…
+18.	Is iterative widening guaranteed to give optimal solutions for this problem? In other words, does there exist a crafting problem where a width bound of w gives a suboptimal solution while w+1 gives a better one? What does this mean for implementing your algorithm—where can you take shortcuts to get better performance if you already lost optimality, or can you not take such shortcuts?
+…
+19.	Can you think of a way to apply iterative widening to the path planning problem? Do you think it would perform better than A* there or worse? Why?
+…
